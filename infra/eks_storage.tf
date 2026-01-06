@@ -55,3 +55,22 @@ resource "aws_eks_pod_identity_association" "ebs_csi" {
   service_account = "ebs-csi-controller-sa"
   role_arn        = aws_iam_role.ebs_csi_role.arn
 }
+
+resource "kubernetes_storage_class_v1" "ebs_sc" {
+  metadata {
+    name = "ebs-encrypted-gp3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+  storage_provisioner    = "ebs.csi.aws.com"
+  reclaim_policy         = "Delete"
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+
+  parameters = {
+    type      = "gp3"
+    encrypted = "true"
+    kmsKeyId  = module.kms_eks.key_arn
+  }
+}

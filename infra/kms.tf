@@ -10,8 +10,39 @@ module "kms_eks" {
   aliases               = ["${var.project_name}-eks-key"]
   enable_default_policy = true
 
-  key_owners = [data.aws_caller_identity.current.arn]
   key_users  = [data.aws_caller_identity.current.arn]
+  key_owners = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+  key_statements = [
+    {
+      sid = "AllowEC2ServiceToUseKey"
+      actions = [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey",
+        "kms:CreateGrant"
+      ]
+      resources = ["*"]
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["autoscaling.amazonaws.com"]
+        },
+        {
+          type        = "AWS"
+          identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"]
+        }
+      ]
+      conditions = [
+        {
+          test     = "Bool"
+          variable = "kms:GrantIsForAWSResource"
+          values   = ["true"]
+        }
+      ]
+    }
+  ]
 
   tags = {
     Project     = var.project_name
@@ -32,8 +63,42 @@ module "kms_data" {
   aliases               = ["${var.project_name}-data-key"]
   enable_default_policy = true
 
-  key_owners = [data.aws_caller_identity.current.arn]
   key_users  = [data.aws_caller_identity.current.arn]
+  key_owners = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+  key_statements = [
+    {
+      sid = "AllowAmazonMQToUseKey"
+      actions = [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey",
+        "kms:CreateGrant"
+      ]
+      resources = ["*"]
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["mq.amazonaws.com"]
+        }
+      ]
+    },
+    {
+      sid = "AllowESOToDecryptSecrets"
+      actions = [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ]
+      resources = ["*"]
+      principals = [
+        {
+          type        = "AWS"
+          identifiers = [aws_iam_role.external_secrets_role.arn]
+        }
+      ]
+    }
+  ]
 
   tags = {
     Project     = var.project_name

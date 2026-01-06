@@ -27,3 +27,9 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "is_production" {
+  type        = bool
+  default     = false
+  description = "Flag to indicate if the environment is production"
+}
