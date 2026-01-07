@@ -17,7 +17,9 @@ module "rds_postgres" {
   username = "db_admin"
   port     = 5432
 
-  manage_master_user_password = true
+  manage_master_user_password = false
+  password_wo                 = random_password.rds_master_pass.result
+  password_wo_version = 1
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = module.vpc.database_subnet_group
@@ -49,3 +51,7 @@ resource "random_password" "db_pass" {
   special  = false
 }
 
+resource "random_password" "rds_master_pass" {
+  length  = 24
+  special = false
+}

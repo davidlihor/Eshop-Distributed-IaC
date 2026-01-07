@@ -46,10 +46,9 @@ module "eks" {
       name           = "${var.cluster_name}-apps"
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["m7i-flex.large"]
-
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
+      min_size     = var.is_production ? 2 : 1
+      max_size     = var.is_production ? 5 : 3
+      desired_size = var.is_production ? 3 : 1
 
       metadata_options = {
         http_tokens                 = "required"
@@ -74,9 +73,9 @@ module "eks" {
       name           = "${var.cluster_name}-mgmt"
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["m7i-flex.large"]
-      min_size       = 1
-      max_size       = 2
-      desired_size   = 1
+      min_size     = var.is_production ? 1 : 0
+      max_size     = var.is_production ? 2 : 1 
+      desired_size = var.is_production ? 1 : 0
 
       labels = {
         role = "management"
@@ -107,6 +106,17 @@ module "eks" {
           }
         }
       }
+    }
+  }
+
+  node_security_group_additional_rules = {
+    istio_webhook_15017 = {
+      description                   = "Cluster API to nodes - Istio Webhook"
+      protocol                      = "tcp"
+      from_port                     = 15017
+      to_port                       = 15017
+      type                          = "ingress"
+      source_cluster_security_group = true
     }
   }
 
