@@ -29,17 +29,17 @@ resource "aws_elasticache_serverless_cache" "valkey" {
 }
 
 resource "aws_elasticache_user" "service_user" {
-  for_each  = toset(local.all_services)
+  for_each  = toset(local.cache_services)
   user_id   = "${var.project_name}-${each.key}"
-  user_name = each.key
+  user_name = replace(each.key, "-", "_")
   engine    = "valkey"
 
-  access_string = "on ~${each.key}:* +@all -@dangerous"
+  access_string = "on ~${replace(each.key, "-", "_")}:* +@all -@dangerous"
   passwords     = [random_password.redis_pass[each.key].result]
 }
 
 resource "random_password" "redis_pass" {
-  for_each = toset(local.all_services)
+  for_each = toset(local.cache_services)
   length   = 24
   special  = false
 }
@@ -67,3 +67,20 @@ resource "aws_elasticache_user_group" "app_users" {
   )
 }
 
+resource "aws_secretsmanager_secret" "valkey_secrets" {
+  for_each                = toset(local.cache_services)
+  name                    = "${var.project_name}/${var.environment}/cache/${each.key}"
+  kms_key_id              = module.kms_data.key_arn
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "valkey_secrets" {
+  for_each  = toset(local.cache_services)
+  secret_id = aws_secretsmanager_secret.valkey_secrets[each.key].id
+  secret_string = jsonencode({
+    redis_user     = aws_elasticache_user.service_user[each.key].user_name
+    redis_password = random_password.redis_pass[each.key].result
+    redis_host     = "${aws_elasticache_serverless_cache.valkey.endpoint[0].address}:6380"
+    redis_instance = "${replace(each.key, "-", "_")}:"
+  })
+}

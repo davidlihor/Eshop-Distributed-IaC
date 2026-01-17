@@ -48,7 +48,7 @@ module "eks" {
       instance_types = ["m7i-flex.large"]
       min_size     = var.is_production ? 2 : 1
       max_size     = var.is_production ? 5 : 3
-      desired_size = var.is_production ? 3 : 1
+      desired_size = var.is_production ? 3 : 2
 
       metadata_options = {
         http_tokens                 = "required"

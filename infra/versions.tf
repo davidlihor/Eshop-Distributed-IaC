@@ -18,9 +18,12 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.7"
     }
-    postgresql = {
-      source  = "cyrilgdn/postgresql"
-      version = "~> 1.26"
-    }
+  }
+
+  backend "s3" {
+    key          = "infra/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
   }
 }

@@ -16,14 +16,4 @@ provider "helm" {
   }
 }
 
-provider "postgresql" {
-  host            = locals.actual_db_host
-  port            = 5432
-  database        = "management"
-  username        = "db_admin"
-  password        = module.rds_postgres.db_instance_master_password
-  sslmode         = "require"
-  connect_timeout = 15
-}
-
 provider "random" {}

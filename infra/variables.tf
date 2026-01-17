@@ -33,9 +33,3 @@ variable "is_production" {
   default     = false
   description = "Flag to indicate if the environment is production"
 }
-
-variable "db_host" {
-  description = "The host for the DB connection"
-  type        = string
-  default     = null
-}

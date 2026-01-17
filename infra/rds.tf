@@ -17,9 +17,7 @@ module "rds_postgres" {
   username = "db_admin"
   port     = 5432
 
-  manage_master_user_password = false
-  password_wo                 = random_password.rds_master_pass.result
-  password_wo_version = 1
+  manage_master_user_password = true
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = module.vpc.database_subnet_group
@@ -43,15 +41,4 @@ module "rds_postgres" {
     Project     = var.project_name
     Environment = var.environment
   }
-}
-
-resource "random_password" "db_pass" {
-  for_each = toset(local.all_services)
-  length   = 24
-  special  = false
-}
-
-resource "random_password" "rds_master_pass" {
-  length  = 24
-  special = false
 }

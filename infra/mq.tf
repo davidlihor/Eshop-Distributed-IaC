@@ -1,5 +1,5 @@
 resource "aws_mq_broker" "rabbit" {
-  broker_name = local.mq_broker_name
+  broker_name = "${var.project_name}-rabbitmq"
 
   engine_type                = "RabbitMQ"
   engine_version             = "4.2"
@@ -16,7 +16,7 @@ resource "aws_mq_broker" "rabbit" {
 
   user {
     username = "admin"
-    password = random_password.mq_admin_pass.result
+    password = random_password.mq_admin_password.result
   }
 
   logs {
@@ -41,12 +41,27 @@ resource "aws_mq_broker" "rabbit" {
 }
 
 resource "aws_cloudwatch_log_group" "rabbitmq_log_group" {
-  name              = "/aws/amazonmq/broker/${local.mq_broker_name}/general"
+  name              = "/aws/amazonmq/broker/${var.project_name}-rabbitmq/general"
   retention_in_days = 30
   log_group_class   = "INFREQUENT_ACCESS"
 }
 
-resource "random_password" "mq_admin_pass" {
+resource "random_password" "mq_admin_password" {
   length  = 32
   special = false
+}
+
+resource "aws_secretsmanager_secret" "mq_admin_credentials" {
+  name = "${var.project_name}/${var.environment}/mq/admin"
+  tags = {
+    "${var.project_name}:mq:brokerArn" = aws_mq_broker.rabbit.arn
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "mq_admin_credentials_val" {
+  secret_id     = aws_secretsmanager_secret.mq_admin_credentials.id
+  secret_string = jsonencode({
+    username = "admin"
+    password = random_password.mq_admin_password.result
+  })
 }

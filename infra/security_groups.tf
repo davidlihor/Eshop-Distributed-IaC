@@ -52,7 +52,7 @@ resource "aws_security_group" "mq_sg" {
     from_port       = 5671
     to_port         = 5671
     protocol        = "tcp"
-    security_groups = [module.eks.node_security_group_id]
+    security_groups = [module.eks.node_security_group_id, aws_security_group.runner_sg.id]
   }
 
   ingress {
@@ -60,7 +60,7 @@ resource "aws_security_group" "mq_sg" {
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
-    security_groups = [module.eks.node_security_group_id]
+    security_groups = [module.eks.node_security_group_id, aws_security_group.runner_sg.id]
   }
 
   egress {

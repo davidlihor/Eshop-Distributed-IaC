@@ -6,6 +6,10 @@ terraform {
       source  = "cyrilgdn/postgresql"
       version = "~> 1.26"
     }
+    rabbitmq = {
+      source  = "cyrilgdn/rabbitmq",
+      version = "~> 1.10"
+    }
     random = {
       source  = "hashicorp/random"
       version = "~> 3.7"
@@ -13,7 +17,7 @@ terraform {
   }
 
   backend "s3" {
-    key          = "config/terraform.tfstate" 
+    key          = "config/terraform.tfstate"
     region       = "us-east-1"
     encrypt      = true
     use_lockfile = true
