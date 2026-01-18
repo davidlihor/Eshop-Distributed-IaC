@@ -1,7 +1,7 @@
 resource "aws_secretsmanager_secret" "service_db_secrets" {
   for_each                = toset(local.db_services)
   name                    = "${var.project_name}/${var.environment}/db/${each.key}"
-  kms_key_id              = module.kms_data.key_arn
+  kms_key_id              = data.aws_kms_alias.data_key.target_key_arn
   recovery_window_in_days = 0
 }
 
@@ -19,7 +19,7 @@ resource "aws_secretsmanager_secret_version" "service_db_secrets_val" {
 resource "aws_secretsmanager_secret" "mq_service_secrets" {
   for_each                = toset(local.mq_services)
   name                    = "${var.project_name}/${var.environment}/mq/${each.key}"
-  kms_key_id              = module.kms_data.key_arn
+  kms_key_id              = data.aws_kms_alias.data_key.target_key_arn
   recovery_window_in_days = 0
 }
 

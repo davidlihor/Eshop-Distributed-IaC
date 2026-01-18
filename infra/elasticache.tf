@@ -80,7 +80,7 @@ resource "aws_secretsmanager_secret_version" "valkey_secrets" {
   secret_string = jsonencode({
     redis_user     = aws_elasticache_user.service_user[each.key].user_name
     redis_password = random_password.redis_pass[each.key].result
-    redis_host     = "${aws_elasticache_serverless_cache.valkey.endpoint[0].address}:6380"
+    redis_host     = "${aws_elasticache_serverless_cache.valkey.endpoint[0].address}:${aws_elasticache_serverless_cache.valkey.endpoint[0].port}"
     redis_instance = "${replace(each.key, "-", "_")}:"
   })
 }

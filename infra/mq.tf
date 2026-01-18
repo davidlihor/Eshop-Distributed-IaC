@@ -53,6 +53,8 @@ resource "random_password" "mq_admin_password" {
 
 resource "aws_secretsmanager_secret" "mq_admin_credentials" {
   name = "${var.project_name}/${var.environment}/mq/admin"
+  kms_key_id              = module.kms_data.key_arn
+  recovery_window_in_days = 0
   tags = {
     "${var.project_name}:mq:brokerArn" = aws_mq_broker.rabbit.arn
   }

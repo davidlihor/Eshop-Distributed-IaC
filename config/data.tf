@@ -36,3 +36,7 @@ data "aws_secretsmanager_secrets" "mq_search" {
 data "aws_secretsmanager_secret_version" "mq_creds" {
   secret_id = tolist(data.aws_secretsmanager_secrets.mq_search.arns)[0]
 }
+
+data "aws_kms_alias" "data_key" {
+  name = "alias/${var.project_name}-data-key"
+}

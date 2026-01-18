@@ -86,13 +86,19 @@ resource "aws_iam_role_policy" "terraform_permissions" {
     Statement = [
       {
         Action = [
-          "rds:*",
-          "ec2:*",
-          "s3:*",
-          "secretsmanager:ListSecrets",
           "mq:ListBrokers",
           "mq:DescribeBroker",
-          "secretsmanager:ListSecrets"
+          "secretsmanager:ListSecrets",
+          "kms:ListAliases"
+        ],
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "rds:*",
+          "ec2:*",
+          "s3:*"
         ],
         Effect   = "Allow"
         Resource = "*"
@@ -101,6 +107,7 @@ resource "aws_iam_role_policy" "terraform_permissions" {
         Action = [
           "secretsmanager:CreateSecret",
           "secretsmanager:PutSecretValue",
+          "secretsmanager:UpdateSecret",
           "secretsmanager:TagResource",
           "secretsmanager:DeleteSecret",
           "secretsmanager:GetSecretValue",
@@ -112,15 +119,30 @@ resource "aws_iam_role_policy" "terraform_permissions" {
           data.aws_secretsmanager_secret.gitlab_token.arn,
           module.rds_postgres.db_instance_master_user_secret_arn,
           "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:secret:rds!db-*",
-          "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:secret:${var.project_name}/${var.environment}/*"        ]
+          "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:secret:${var.project_name}/${var.environment}/*"
+        ]
       },
       {
         Action   = [
           "kms:Decrypt",
-          "kms:DescribeKey"
+          "kms:Encrypt",
+          "kms:DescribeKey",
+          "kms:GenerateDataKey"
         ],
-        Effect   = "Allow"
+        Effect   = "Allow",
         Resource = [module.kms_data.key_arn]
+      },
+      {
+        Action   = [
+          "kms:CreateGrant"
+        ],
+        Effect   = "Allow",
+        Resource = [module.kms_data.key_arn],
+        Condition = {
+          Bool = {
+            "kms:GrantIsForAWSResource": "true"
+          }
+        }
       }
     ]
   })

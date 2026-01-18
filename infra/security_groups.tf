@@ -5,9 +5,9 @@ resource "aws_security_group" "valkey_sg" {
 
   ingress {
     from_port       = 6379
-    to_port         = 6380
+    to_port         = 6379
     protocol        = "tcp"
-    security_groups = [module.eks.node_security_group_id]
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
   egress {
