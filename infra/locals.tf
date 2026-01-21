@@ -10,4 +10,6 @@ locals {
   cache_services = [
     for name, config in local.services_config : name if config.has_cache
   ]
+
+  monitoring_buckets = ["loki", "mimir", "tempo"]
 }

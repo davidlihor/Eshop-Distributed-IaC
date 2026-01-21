@@ -33,3 +33,9 @@ variable "is_production" {
   default     = false
   description = "Flag to indicate if the environment is production"
 }
+
+variable "gateway_api_version" {
+  description = "Gateway API CRD bundle version"
+  type        = string
+  default     = "v1.2.1"
+}
