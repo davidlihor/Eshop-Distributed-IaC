@@ -46,34 +46,6 @@ resource "helm_release" "istio_base" {
   depends_on = [helm_release.aws_lbc]
 }
 
-resource "helm_release" "istiod" {
-  name       = "istiod"
-  repository = "https://istio-release.storage.googleapis.com/charts"
-  chart      = "istiod"
-  namespace  = "istio-system"
-  version    = "1.28.3"
-
-  depends_on = [helm_release.istio_base]
-}
-
-resource "helm_release" "eso" {
-  name       = "external-secrets"
-  repository = "https://charts.external-secrets.io"
-  chart      = "external-secrets"
-  namespace  = "external-secrets"
-  version    = "1.2.0"
-  create_namespace = true
-
-  set = [
-    {
-      name  = "installCRDs"
-      value = "true"
-    }
-  ]
-
-  depends_on = [module.eks.eks_managed_node_groups]
-}
-
 resource "helm_release" "argocd" {
   name       = "argo-cd"
   repository = "https://argoproj.github.io/argo-helm"

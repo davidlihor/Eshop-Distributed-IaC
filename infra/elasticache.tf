@@ -34,7 +34,7 @@ resource "aws_elasticache_user" "service_user" {
   user_name = replace(each.key, "-", "_")
   engine    = "valkey"
 
-  access_string = "on ~${replace(each.key, "-", "_")}:* +@all -@dangerous"
+  access_string = "on ~${replace(each.key, "-", "_")}:* +ping +@all -@dangerous"
   passwords     = [random_password.redis_pass[each.key].result]
 }
 
