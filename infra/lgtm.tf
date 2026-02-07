@@ -4,8 +4,8 @@ resource "aws_iam_role" "monitoring_s3_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = ["sts:AssumeRole", "sts:TagSession"]
-      Effect = "Allow"
+      Action    = ["sts:AssumeRole", "sts:TagSession"]
+      Effect    = "Allow"
       Principal = { Service = "pods.eks.amazonaws.com" }
     }]
   })

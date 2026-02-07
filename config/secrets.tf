@@ -29,6 +29,6 @@ resource "aws_secretsmanager_secret_version" "mq_service_secrets_val" {
   secret_string = jsonencode({
     mq_username = replace(each.key, "-", "_")
     mq_password = random_password.mq_service_pass[each.key].result
-    mq_host = replace(replace(data.aws_mq_broker.rabbit.instances[0].endpoints[0], "amqps://", ""), ":5671", "")
+    mq_host     = replace(replace(data.aws_mq_broker.rabbit.instances[0].endpoints[0], "amqps://", ""), ":5671", "")
   })
 }

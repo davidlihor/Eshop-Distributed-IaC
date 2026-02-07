@@ -17,5 +17,5 @@ locals {
 
 locals {
   db_admin = jsondecode(data.aws_secretsmanager_secret_version.creds.secret_string)
-  mq_admin     = jsondecode(data.aws_secretsmanager_secret_version.mq_creds.secret_string)
+  mq_admin = jsondecode(data.aws_secretsmanager_secret_version.mq_creds.secret_string)
 }

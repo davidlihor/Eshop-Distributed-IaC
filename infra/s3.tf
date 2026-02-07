@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "monitoring" {
-  for_each = toset(local.monitoring_buckets)
-  bucket   = "${var.project_name}-${var.environment}-${each.value}-storage-${random_string.suffix.result}"
+  for_each      = toset(local.monitoring_buckets)
+  bucket        = "${var.project_name}-${var.environment}-${each.value}-storage-${random_string.suffix.result}"
   force_destroy = var.environment == "dev" ? true : false
 
   tags = {

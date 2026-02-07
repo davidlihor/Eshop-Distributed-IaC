@@ -23,7 +23,7 @@ sudo gitlab-runner register \
   --url "https://gitlab.com/" \
   --token $TOKEN \
   --executor "docker" \
-  --docker-image "alphine:latest" \
+  --docker-image "alpine:latest" \
   --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" \
   --description "AWS-Private-EC2-Runner"
 sudo gitlab-runner start

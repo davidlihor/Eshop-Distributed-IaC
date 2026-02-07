@@ -46,9 +46,9 @@ module "eks" {
       name           = "${var.cluster_name}-apps"
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["m7i-flex.large"]
-      min_size     = var.is_production ? 2 : 1
-      max_size     = var.is_production ? 5 : 3
-      desired_size = var.is_production ? 3 : 2
+      min_size       = var.is_production ? 2 : 1
+      max_size       = var.is_production ? 5 : 3
+      desired_size   = var.is_production ? 3 : 2
 
       metadata_options = {
         http_tokens                 = "required"
@@ -73,9 +73,9 @@ module "eks" {
       name           = "${var.cluster_name}-mgmt"
       ami_type       = "AL2023_x86_64_STANDARD"
       instance_types = ["m7i-flex.large"]
-      min_size     = var.is_production ? 1 : 0
-      max_size     = var.is_production ? 2 : 1 
-      desired_size = var.is_production ? 1 : 0
+      min_size       = var.is_production ? 1 : 0
+      max_size       = var.is_production ? 2 : 1
+      desired_size   = var.is_production ? 1 : 0
 
       labels = {
         role = "management"

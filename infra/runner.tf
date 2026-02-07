@@ -3,9 +3,9 @@ resource "aws_launch_template" "gitlab_runner_lt" {
   image_id      = data.aws_ssm_parameter.al2023_ami.value
   instance_type = "t3.micro"
 
-  user_data = base64encode(templatefile("${path.module}/userdata.sh", {}))
+  user_data  = base64encode(templatefile("${path.module}/userdata.sh", {}))
   depends_on = [aws_iam_role_policy.terraform_permissions]
-  
+
   lifecycle {
     create_before_destroy = true
   }
@@ -114,7 +114,7 @@ resource "aws_iam_role_policy" "terraform_permissions" {
           "secretsmanager:DescribeSecret",
           "secretsmanager:GetResourcePolicy"
         ],
-        Effect   = "Allow"
+        Effect = "Allow"
         Resource = [
           data.aws_secretsmanager_secret.gitlab_token.arn,
           module.rds_postgres.db_instance_master_user_secret_arn,
@@ -123,7 +123,7 @@ resource "aws_iam_role_policy" "terraform_permissions" {
         ]
       },
       {
-        Action   = [
+        Action = [
           "kms:Decrypt",
           "kms:Encrypt",
           "kms:DescribeKey",
@@ -133,14 +133,14 @@ resource "aws_iam_role_policy" "terraform_permissions" {
         Resource = [module.kms_data.key_arn]
       },
       {
-        Action   = [
+        Action = [
           "kms:CreateGrant"
         ],
         Effect   = "Allow",
         Resource = [module.kms_data.key_arn],
         Condition = {
           Bool = {
-            "kms:GrantIsForAWSResource": "true"
+            "kms:GrantIsForAWSResource" : "true"
           }
         }
       }

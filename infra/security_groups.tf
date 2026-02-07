@@ -4,9 +4,9 @@ resource "aws_security_group" "valkey_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    from_port       = 6379
-    to_port         = 6379
-    protocol        = "tcp"
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
     cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 

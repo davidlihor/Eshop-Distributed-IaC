@@ -40,18 +40,18 @@ resource "helm_release" "istio_base" {
   repository       = "https://istio-release.storage.googleapis.com/charts"
   chart            = "base"
   namespace        = "istio-system"
-  version           = "1.28.3"
+  version          = "1.28.3"
   create_namespace = true
 
   depends_on = [helm_release.aws_lbc]
 }
 
 resource "helm_release" "argocd" {
-  name       = "argo-cd"
-  repository = "https://argoproj.github.io/argo-helm"
-  chart      = "argo-cd"
-  namespace  = "argocd"
-  version    = "9.3.4"
+  name             = "argo-cd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argo-cd"
+  namespace        = "argocd"
+  version          = "9.3.4"
   create_namespace = true
 
   depends_on = [module.eks.eks_managed_node_groups]
