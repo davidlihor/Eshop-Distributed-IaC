@@ -45,3 +45,27 @@ variable "admin_arn" {
   description = "ARN of the admin user"
   default     = ""
 }
+
+variable "billing_mode" {
+  description = "DynamoDB billing mode (PROVISIONED or PAY_PER_REQUEST)"
+  type        = string
+  default     = "PAY_PER_REQUEST"
+}
+
+variable "read_capacity" {
+  description = "Read capacity units for DynamoDB (only for PROVISIONED mode)"
+  type        = number
+  default     = 5
+}
+
+variable "write_capacity" {
+  description = "Write capacity units for DynamoDB (only for PROVISIONED mode)"
+  type        = number
+  default     = 5
+}
+
+variable "domain_name" {
+  description = "Main domain name"
+  type        = string
+  default     = "davidlihor.com"
+}

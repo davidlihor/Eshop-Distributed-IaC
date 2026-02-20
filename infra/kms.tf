@@ -97,6 +97,21 @@ module "kms_data" {
           identifiers = [aws_iam_role.external_secrets_role.arn]
         }
       ]
+    },
+    {
+      sid     = "AllowDiscountPodToUseKey"
+      actions = [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:GenerateDataKey*"
+      ]
+      resources = ["*"]
+      principals = [
+        {
+          type        = "AWS"
+          identifiers = [aws_iam_role.discount_role.arn]
+        }
+      ]
     }
   ]
 
