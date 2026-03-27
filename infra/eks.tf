@@ -3,7 +3,7 @@ module "eks" {
   version = "~> 21.10"
 
   name               = var.cluster_name
-  kubernetes_version = "1.34"
+  kubernetes_version = "1.35"
   enable_irsa        = true
 
   vpc_id     = module.vpc.vpc_id
